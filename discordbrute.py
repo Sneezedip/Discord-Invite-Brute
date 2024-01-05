@@ -5,8 +5,6 @@ from colorama import Fore,Style
 import string
 import threading
 import random
-url = f"https://discord.com/api/v9/invites/vHcvkG7eyJ?with_counts=true&with_expiration=true"
-
 def Menu():
     def GetOptions():
         while True:
