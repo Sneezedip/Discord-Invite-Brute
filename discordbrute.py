@@ -83,8 +83,10 @@ def GetInv(l):
     global removed_threads,current_Index,proxies_len
     error_count = 0
     while True:
-        ran_inv = ''.join(random.choices(string.digits+string.ascii_uppercase+string.ascii_lowercase,k=l))
+        if current_Index >= proxies_len:
+            break
         try:
+            ran_inv = ''.join(random.choices(string.digits+string.ascii_uppercase+string.ascii_lowercase,k=l))
             response = requests.get(f"https://discord.com/api/v9/invites/{ran_inv}?with_counts=true&with_expiration=true",proxies={"http": proxies_list[current_Index], "https": proxies_list[current_Index]}, timeout=8)
             if response.status_code == 200:
                 print(Fore.GREEN,"VALID CODE. ",ran_inv)
@@ -100,9 +102,7 @@ def GetInv(l):
                         print(Fore.RED, "Maximum requests reached, and all threads were terminated.")
                         removed_threads = 0
                         time.sleep(1)
-                        break
                     print(Fore.BLUE,"MAXIMUM REQUESTS!")
-                    break
                 else:
                     print(Fore.RED,"TOO MANY REQUESTS.")  
                     error_count += 1
