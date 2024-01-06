@@ -11,6 +11,7 @@ removed_threads = 0
 proxies_list = []
 proxies_len = 0
 current_Index = 0
+mixed = False
 def Menu():
     global threads,proxies_list,proxies_len
     threads = 0
@@ -18,15 +19,19 @@ def Menu():
     def GetOptions():
         while True:
             time.sleep(0.5)
+            os.system("cls")
             try:
-                return int(input("""
+                uc = int(input("""
                     {3}      DISCORD BRUTE
                     {0} [1] - {1} Temporary Invite (8 lenght)
                     {0} [2] - {1} Permantent Invite (10 lenght)
+                    {0} [3] - {1} Mixed
 
                     {3}    made by .sneezedip
                     {2}
                 ->""".format(Fore.RED,Fore.CYAN,Style.RESET_ALL,Fore.LIGHTRED_EX)))
+
+                if uc in {1, 2, 3}: return uc
             except ValueError:
                 print(Fore.RED,"Invalid Integer.",Style.RESET_ALL)
     def ValidInput():
@@ -56,13 +61,10 @@ def Menu():
         threads = ValidInput() if use_threads == "yes" else 1
         GetProxies()
         proxies_len = len(proxies_list) 
-        if choice == 1 or choice == 2:
-            if choice == 1:
-                StartThread(8,threads)
-            else:
-                StartThread(10,threads)
-        else:
-            print(Fore.RED,"Invalid Integer.",Style.RESET_ALL)
+        match choice:
+            case 1: StartThread(8,threads)
+            case 2: StartThread(10,threads)
+            case 3: StartThread(0,threads)
 def StartThread(len,threads_amount):
     global list_of_threads
     """
@@ -92,6 +94,7 @@ def GetInv(l):
     global removed_threads,current_Index,proxies_len
     error_count = 0
     while True:
+        l = random.choice([8,10]) if l == 0 else l
         ran_inv = ''.join(random.choices(string.digits+string.ascii_uppercase+string.ascii_lowercase,k=l))
         if current_Index >= proxies_len:
             break
@@ -114,7 +117,7 @@ def GetInv(l):
         except requests.RequestException as e:
             if str(e).__contains__("Max retries"):
                 proxies_len -= 1
-                print(f"{Fore.MAGENTA} Proxie {proxies_list[current_Index]} not worked and has been removed. | {proxies_len} remaining...") 
+                print(f"{Fore.MAGENTA} Proxie {proxies_list[current_Index]} failed to connect and has been removed. | {proxies_len} remaining...") 
                 proxies_list.pop(current_Index)
                 try:
                     write_proxies(proxies_list)
